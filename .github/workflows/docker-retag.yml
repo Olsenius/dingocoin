@@ -1,0 +1,15 @@
+name: docker-retag
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  retag-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Retag docker image
+        run: |
+          docker run --rm --net host -v regctl-conf:/home/appuser/.regctl/ regclient/regctl:latest registry login registry-1.docker.io -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+	        docker run --rm --net host -v regctl-conf:/home/appuser/.regctl/ regclient/regctl:latest image copy dingocoin/dingocoin:${GITHUB_SHA} dingocoin/dingocoin:${GITHUB_REF_NAME}
