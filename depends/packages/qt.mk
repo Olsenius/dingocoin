@@ -119,8 +119,9 @@ $(package)_config_opts += -no-feature-xmlstreamwriter
 # disable for macOs and linux only.
 $(package)_config_opts_darwin = -no-feature-sessionmanager
 $(package)_config_opts_darwin += -securetransport
-# Qt 5.7.1 NEON code doesn't compile correctly for ARM64 macOS
-$(package)_config_opts_aarch64_darwin = -no-neon
+# Qt 5.7.1 NEON code doesn't compile correctly for ARM64 macOS (predates Apple Silicon)
+# Disable NEON via CXXFLAGS preprocessor define
+$(package)_cxxflags_aarch64_darwin = -DQT_COMPILER_SUPPORTS_NEON=0
 $(package)_config_opts_linux = -no-feature-sessionmanager
 
 ifneq ($(build_os),darwin)
