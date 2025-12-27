@@ -113,8 +113,7 @@ $(package)_config_opts += -no-feature-xmlstreamwriter
 
 # session manager is intrinsically needed for Windows on 5.7.1
 # disable for macOs and linux only.
-$(package)_config_opts_darwin = -no-feature-sessionmanager
-$(package)_cxxflags_darwin = -Wno-enum-constexpr-conversion
+$(package)_config_opts_darwin = -no-feature-sessionmanager QMAKE_CXXFLAGS+="-Wno-enum-constexpr-conversion"
 $(package)_config_opts_linux = -no-feature-sessionmanager
 
 ifneq ($(build_os),darwin)
