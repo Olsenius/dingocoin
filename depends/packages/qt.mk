@@ -120,6 +120,8 @@ $(package)_config_opts += -no-feature-xmlstreamwriter
 # disable for macOs and linux only.
 $(package)_config_opts_darwin = -no-feature-sessionmanager
 $(package)_config_opts_darwin += -securetransport
+# Qt 5.7.1 NEON code predates Apple Silicon - undefine __ARM_NEON__ for all Qt builds
+$(package)_cxxflags_aarch64_darwin = -U__ARM_NEON__ -U__ARM_NEON
 $(package)_config_opts_linux = -no-feature-sessionmanager
 
 ifneq ($(build_os),darwin)
