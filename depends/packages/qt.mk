@@ -233,6 +233,13 @@ define $(package)_stage_cmds
   $(MAKE) -C qttranslations INSTALL_ROOT=$($(package)_staging_dir) install_subtargets && \
   if `test -f qtbase/src/plugins/platforms/xcb/xcb-static/libxcb-static.a`; then \
     cp qtbase/src/plugins/platforms/xcb/xcb-static/libxcb-static.a $($(package)_staging_prefix_dir)/lib; \
+  fi && \
+  if `test -f qtbase/src/plugins/platforms/cocoa/libqcocoa.a`; then \
+    mkdir -p $($(package)_staging_prefix_dir)/plugins/platforms && \
+    cp qtbase/src/plugins/platforms/cocoa/libqcocoa.a $($(package)_staging_prefix_dir)/plugins/platforms/; \
+  fi && \
+  if `test -f qtbase/lib/libQt5PlatformSupport.a`; then \
+    cp qtbase/lib/libQt5PlatformSupport.a $($(package)_staging_prefix_dir)/lib/; \
   fi
 endef
 
