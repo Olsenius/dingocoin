@@ -231,3 +231,50 @@ jobs:
             depends/${{ matrix.host }}/bin/dingocoin*
             dist/Dingocoin-Qt.app
             ${{ matrix.name }}-bench.csv
+
+  build-macos:
+    name: ${{ matrix.name }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: arm64-macos
+            os: macos-15
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          brew install autoconf automake libtool miniupnpc openssl pkg-config protobuf \
+                       qt@5 zeromq qrencode librsvg boost berkeley-db@5 libevent
+
+      - name: Build Dingocoin
+        run: |
+          export PATH="/opt/homebrew/opt/qt@5/bin:$PATH"
+          export LDFLAGS="-L/opt/homebrew/lib -L/opt/homebrew/opt/qt@5/lib -L/opt/homebrew/opt/berkeley-db@5/lib -L/opt/homebrew/opt/openssl@3/lib"
+          export CPPFLAGS="-I/opt/homebrew/include -I/opt/homebrew/opt/qt@5/include -I/opt/homebrew/opt/berkeley-db@5/include -I/opt/homebrew/opt/openssl@3/include"
+          export PKG_CONFIG_PATH="/opt/homebrew/opt/qt@5/lib/pkgconfig:/opt/homebrew/opt/openssl@3/lib/pkgconfig"
+          ./autogen.sh
+          ./configure --enable-c++17 --with-gui=qt5 \
+            --with-boost=/opt/homebrew \
+            --with-incompatible-bdb
+          make -j$(sysctl -n hw.ncpu)
+
+      - name: Run tests
+        run: |
+          make check VERBOSE=1
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dingocoin-${{ github.sha }}-${{ matrix.name }}
+          path: |
+            src/dingocoind
+            src/dingocoin-cli
+            src/dingocoin-tx
+            src/qt/dingocoin-qt
