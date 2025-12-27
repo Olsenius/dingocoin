@@ -20,6 +20,7 @@ $(package)_patches+=no-xlib.patch
 $(package)_patches+=backports-1.patch
 $(package)_patches+=fix-clang-enum-constexpr.patch
 $(package)_patches+=fix-libpng-fp-h.patch
+$(package)_patches+=fix-arm64-neon.patch
 
 $(package)_qttranslations_file_name=qttranslations-$($(package)_suffix)
 $(package)_qttranslations_sha256_hash=3a15aebd523c6d89fb97b2d3df866c94149653a26d27a00aac9b6d3020bc5a1d
@@ -119,9 +120,6 @@ $(package)_config_opts += -no-feature-xmlstreamwriter
 # disable for macOs and linux only.
 $(package)_config_opts_darwin = -no-feature-sessionmanager
 $(package)_config_opts_darwin += -securetransport
-# Qt 5.7.1 NEON code doesn't compile correctly for ARM64 macOS (predates Apple Silicon)
-# Disable NEON via CXXFLAGS preprocessor define
-$(package)_cxxflags_aarch64_darwin = -DQT_COMPILER_SUPPORTS_NEON=0
 $(package)_config_opts_linux = -no-feature-sessionmanager
 
 ifneq ($(build_os),darwin)
@@ -197,6 +195,7 @@ define $(package)_preprocess_cmds
   echo "!host_build: QMAKE_LFLAGS     += $($(package)_ldflags)" >> qtbase/mkspecs/common/gcc-base.conf && \
   patch -p1 < $($(package)_patch_dir)/fix-clang-enum-constexpr.patch && \
   patch -p1 < $($(package)_patch_dir)/fix-libpng-fp-h.patch && \
+  patch -p1 < $($(package)_patch_dir)/fix-arm64-neon.patch && \
   sed -i.old 's/require_action(inContext != NULL, InvalidContext, err = paramErr);/if (!inContext) return paramErr;/' qtbase/src/plugins/platforms/cocoa/qcocoahelpers.mm && \
   sed -i.old 's/require_action(inBounds != NULL, InvalidBounds, err = paramErr);/if (!inBounds) return paramErr;/' qtbase/src/plugins/platforms/cocoa/qcocoahelpers.mm && \
   sed -i.old 's/require_action(inImage != NULL, InvalidImage, err = paramErr);/if (!inImage) return paramErr;/' qtbase/src/plugins/platforms/cocoa/qcocoahelpers.mm && \
