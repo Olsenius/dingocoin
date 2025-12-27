@@ -42,13 +42,21 @@ jobs:
           export LDFLAGS="-L/opt/homebrew/lib -L/opt/homebrew/opt/qt@5/lib -L/opt/homebrew/opt/berkeley-db@5/lib -L/opt/homebrew/opt/openssl@3/lib"
           export CPPFLAGS="-I/opt/homebrew/include -I/opt/homebrew/opt/qt@5/include -I/opt/homebrew/opt/berkeley-db@5/include -I/opt/homebrew/opt/openssl@3/include"
           export PKG_CONFIG_PATH="/opt/homebrew/opt/qt@5/lib/pkgconfig:/opt/homebrew/opt/openssl@3/lib/pkgconfig"
+
           # Boost 1.90+ has header-only boost_system, create stub library for configure detection
-          echo "void boost_system_stub() {}" | clang -c -x c - -o /tmp/boost_system_stub.o
+          # The stub needs an 'exit' symbol since that's what AC_CHECK_LIB tests for
+          echo "void exit(int status) {}" > /tmp/boost_system_stub.c
+          clang -c /tmp/boost_system_stub.c -o /tmp/boost_system_stub.o
           ar rcs /opt/homebrew/lib/libboost_system.a /tmp/boost_system_stub.o
+
+          # Debug: verify stub was created
+          ls -la /opt/homebrew/lib/libboost_system*
+
           ./autogen.sh
           ./configure --enable-c++17 --with-gui=qt5 \
             --with-boost=/opt/homebrew \
-            --with-incompatible-bdb
+            --with-incompatible-bdb \
+            BOOST_LDFLAGS="-L/opt/homebrew/lib"
           make -j$(sysctl -n hw.ncpu)
 
       - name: Run tests
