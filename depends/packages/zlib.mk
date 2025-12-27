@@ -11,7 +11,10 @@ $(package)_build_opts+=RANLIB="$($(package)_ranlib)"
 $(package)_build_opts+=AR="$($(package)_ar)"
 $(package)_build_opts_darwin+=AR="$($(package)_libtool)"
 $(package)_build_opts_darwin+=ARFLAGS="-o"
-$(package)_build_opts_darwin+=CFLAGS="$($(package)_cflags) $($(package)_cppflags) -fPIC -DHAVE_UNISTD_H -DZ_HAVE_UNISTD_H"
+endef
+
+define $(package)_preprocess_cmds
+  sed -i.bak 's/#.*define fdopen.*NULL.*/#define HAVE_FSEEKO 1/' zutil.h
 endef
 
 define $(package)_config_cmds
