@@ -114,7 +114,6 @@ $(package)_config_opts += -no-feature-xmlstreamwriter
 # session manager is intrinsically needed for Windows on 5.7.1
 # disable for macOs and linux only.
 $(package)_config_opts_darwin = -no-feature-sessionmanager
-$(package)_config_env_darwin = CXXFLAGS="$($(package)_cxxflags) -Wno-enum-constexpr-conversion"
 $(package)_config_opts_linux = -no-feature-sessionmanager
 
 ifneq ($(build_os),darwin)
@@ -188,6 +187,7 @@ define $(package)_preprocess_cmds
   echo "!host_build: QMAKE_CFLAGS     += $($(package)_cflags) $($(package)_cppflags)" >> qtbase/mkspecs/common/gcc-base.conf && \
   echo "!host_build: QMAKE_CXXFLAGS   += $($(package)_cxxflags) $($(package)_cppflags)" >> qtbase/mkspecs/common/gcc-base.conf && \
   echo "!host_build: QMAKE_LFLAGS     += $($(package)_ldflags)" >> qtbase/mkspecs/common/gcc-base.conf && \
+  echo "QMAKE_CXXFLAGS += -Wno-enum-constexpr-conversion" >> qtbase/mkspecs/macx-clang/qmake.conf && \
   sed -i.old "s|QMAKE_CFLAGS            = |!host_build: QMAKE_CFLAGS            = $($(package)_cflags) $($(package)_cppflags) |" qtbase/mkspecs/win32-g++/qmake.conf && \
   sed -i.old "s|QMAKE_LFLAGS            = |!host_build: QMAKE_LFLAGS            = $($(package)_ldflags) |" qtbase/mkspecs/win32-g++/qmake.conf && \
   sed -i.old "s|QMAKE_CXXFLAGS          = |!host_build: QMAKE_CXXFLAGS            = $($(package)_cxxflags) $($(package)_cppflags) |" qtbase/mkspecs/win32-g++/qmake.conf
