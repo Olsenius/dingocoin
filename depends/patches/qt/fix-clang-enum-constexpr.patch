@@ -1,0 +1,14 @@
+--- a/qtbase/src/corelib/global/qtypetraits.h
++++ b/qtbase/src/corelib/global/qtypetraits.h
+@@ -477,6 +477,11 @@ template <typename T> struct QEnableIf<true, T> { typedef T Type; };
+
+ } // namespace QtPrivate
+
++// Clang 16+ has a strict check for enum values in constexpr context
++#if defined(__clang__) && __clang_major__ >= 16
++#pragma clang diagnostic ignored "-Wenum-constexpr-conversion"
++#endif
++
+ QT_END_NAMESPACE
+
+ #endif // QTYPETRAITS_H
