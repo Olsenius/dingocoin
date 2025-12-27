@@ -4,9 +4,9 @@ OSX_SDK=$(shell xcrun --show-sdk-path)
 darwin_CC=clang -target $(host) -mmacosx-version-min=$(OSX_MIN_VERSION)
 darwin_CXX=clang++ -target $(host) -mmacosx-version-min=$(OSX_MIN_VERSION) -stdlib=libc++
 
-darwin_CFLAGS=-pipe --sysroot $(OSX_SDK)
+darwin_CFLAGS=-pipe -isysroot $(OSX_SDK)
 darwin_CXXFLAGS=$(darwin_CFLAGS)
-darwin_LDFLAGS=--sysroot $(OSX_SDK)
+darwin_LDFLAGS=-isysroot $(OSX_SDK)
 
 darwin_release_CFLAGS=-O2
 darwin_release_CXXFLAGS=$(darwin_release_CFLAGS)
