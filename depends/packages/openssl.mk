@@ -47,7 +47,7 @@ $(package)_config_opts_i686_mingw32=mingw
 endef
 
 define $(package)_preprocess_cmds
-  sed -i.old "/define DATE/d" util/mkbuildinf.pl
+  sed -i.old 's|^my $$date = .*|my $$date = "date not available";|' util/mkbuildinf.pl
 endef
 
 define $(package)_config_cmds
