@@ -259,15 +259,13 @@ jobs:
           export LDFLAGS="-L/opt/homebrew/lib -L/opt/homebrew/opt/qt@5/lib -L/opt/homebrew/opt/berkeley-db@5/lib -L/opt/homebrew/opt/openssl@3/lib"
           export CPPFLAGS="-I/opt/homebrew/include -I/opt/homebrew/opt/qt@5/include -I/opt/homebrew/opt/berkeley-db@5/include -I/opt/homebrew/opt/openssl@3/include"
           export PKG_CONFIG_PATH="/opt/homebrew/opt/qt@5/lib/pkgconfig:/opt/homebrew/opt/openssl@3/lib/pkgconfig"
-          # Debug: show boost library files
-          ls -la /opt/homebrew/lib/libboost* || true
-          ls -la $(brew --prefix boost)/lib/ || true
+          # Boost 1.90+ has header-only boost_system, create stub library for configure detection
+          echo "void boost_system_stub() {}" | clang -c -x c - -o /tmp/boost_system_stub.o
+          ar rcs /opt/homebrew/lib/libboost_system.a /tmp/boost_system_stub.o
           ./autogen.sh
           ./configure --enable-c++17 --with-gui=qt5 \
-            --with-boost=$(brew --prefix boost) \
-            --with-incompatible-bdb \
-            BOOST_LDFLAGS="-L$(brew --prefix boost)/lib" \
-            BOOST_CPPFLAGS="-I$(brew --prefix boost)/include"
+            --with-boost=/opt/homebrew \
+            --with-incompatible-bdb
           make -j$(sysctl -n hw.ncpu)
 
       - name: Run tests
