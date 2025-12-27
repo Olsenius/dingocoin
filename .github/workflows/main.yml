@@ -130,7 +130,7 @@ jobs:
     runs-on: macos-15
     env:
       ARTIFACT_DIR: ${{ github.workspace }}/artifacts/macos
-      HOST: arm64-apple-darwin
+      HOST: aarch64-apple-darwin
     steps:
       - name: Getting Source
         uses: actions/download-artifact@v4
