@@ -45,19 +45,17 @@ $(package)_config_opts+=no-whirlpool
 $(package)_config_opts+=no-zlib
 $(package)_config_opts+=no-zlib-dynamic
 $(package)_config_opts_linux=-fPIC -Wa,--noexecstack
-# Platform target - must be specified separately as OpenSSL Configure expects target first
-$(package)_config_target_x86_64_linux=linux-x86_64
-$(package)_config_target_i686_linux=linux-generic32
-$(package)_config_target_arm_linux=linux-generic32
-$(package)_config_target_aarch64_linux=linux-generic64
-$(package)_config_target_mipsel_linux=linux-generic32
-$(package)_config_target_mips_linux=linux-generic32
-$(package)_config_target_powerpc_linux=linux-generic32
-$(package)_config_target_x86_64_darwin=darwin64-x86_64-cc
-$(package)_config_target_aarch64_darwin=darwin64-x86_64-cc
-$(package)_config_opts_aarch64_darwin=no-asm
-$(package)_config_target_x86_64_mingw32=mingw64
-$(package)_config_target_i686_mingw32=mingw
+$(package)_config_opts_x86_64_linux=linux-x86_64
+$(package)_config_opts_i686_linux=linux-generic32
+$(package)_config_opts_arm_linux=linux-generic32
+$(package)_config_opts_aarch64_linux=linux-generic64
+$(package)_config_opts_mipsel_linux=linux-generic32
+$(package)_config_opts_mips_linux=linux-generic32
+$(package)_config_opts_powerpc_linux=linux-generic32
+$(package)_config_opts_x86_64_darwin=darwin64-x86_64-cc
+$(package)_config_opts_aarch64_darwin=darwin64-x86_64-cc no-asm
+$(package)_config_opts_x86_64_mingw32=mingw64
+$(package)_config_opts_i686_mingw32=mingw
 endef
 
 define $(package)_preprocess_cmds
@@ -67,7 +65,7 @@ define $(package)_preprocess_cmds
 endef
 
 define $(package)_config_cmds
-  ./Configure $($(package)_config_target) $($(package)_config_opts) && \
+  ./Configure $($(package)_config_opts) && \
   make depend
 endef
 
