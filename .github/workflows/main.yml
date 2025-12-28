@@ -5,6 +5,7 @@ on:
     - master
     - develop
     - Develop-Doge-Parity
+    - macos-build
   pull_request:
     branches:
     - master
