@@ -5,8 +5,8 @@ $(package)_suffix=opensource-src-$($(package)_version).tar.gz
 $(package)_file_name=qtbase-$($(package)_suffix)
 $(package)_sha256_hash=95f83e532d23b3ddbde7973f380ecae1bac13230340557276f75f2e37984e410
 $(package)_dependencies=zlib
-$(package)_linux_dependencies=freetype fontconfig libxcb libxkbcommon
-$(package)_mingw32_dependencies=
+$(package)_linux_dependencies=openssl freetype fontconfig libxcb libxkbcommon
+$(package)_mingw32_dependencies=openssl
 $(package)_build_subdir=qtbase
 $(package)_qt_libs=corelib network widgets gui plugins testlib printsupport
 
@@ -138,13 +138,13 @@ $(package)_config_opts_linux += -system-freetype
 $(package)_config_opts_linux += -no-sm
 $(package)_config_opts_linux += -fontconfig
 $(package)_config_opts_linux += -no-opengl
-$(package)_config_opts_linux += -no-openssl
+$(package)_config_opts_linux += -openssl-linked
 $(package)_config_opts_linux += -dbus-runtime
 $(package)_config_opts_arm_linux  = -platform linux-g++ -xplatform $(host)
 $(package)_config_opts_i686_linux  = -xplatform linux-g++-32
 
 $(package)_config_opts_mingw32 = -no-opengl
-$(package)_config_opts_mingw32 += -no-openssl
+$(package)_config_opts_mingw32 += -openssl-linked
 $(package)_config_opts_mingw32 += -no-dbus
 $(package)_config_opts_mingw32 += -xplatform win32-g++
 $(package)_config_opts_mingw32 += -device-option CROSS_COMPILE="$(host)-"
