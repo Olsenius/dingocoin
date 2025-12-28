@@ -150,8 +150,11 @@ jobs:
       - name: Build Dingocoin
         run: |
           OPENSSL_PREFIX=$(brew --prefix openssl@3)
+          export PKG_CONFIG_PATH="${OPENSSL_PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}"
           ./configure --prefix=$(realpath depends/$HOST) --with-gui=qt5 --enable-reduce-exports \
-            LDFLAGS="-L${OPENSSL_PREFIX}/lib" CPPFLAGS="-I${OPENSSL_PREFIX}/include"
+            LDFLAGS="-L${OPENSSL_PREFIX}/lib" CPPFLAGS="-I${OPENSSL_PREFIX}/include" \
+            CRYPTO_CFLAGS="-I${OPENSSL_PREFIX}/include" CRYPTO_LIBS="-L${OPENSSL_PREFIX}/lib -lcrypto" \
+            SSL_CFLAGS="-I${OPENSSL_PREFIX}/include" SSL_LIBS="-L${OPENSSL_PREFIX}/lib -lssl -lcrypto"
           make -j$(sysctl -n hw.ncpu)
       - name: Prepare Files for Artifact
         run: |
